@@ -43,12 +43,6 @@ const projects = [
     description: 'An interactive educational platform that uses game mechanics to make learning engaging and effective for students.',
     tech: ['JavaScript', 'Game Design', 'React'],
   },
-  {
-    icon: <FiShield />,
-    title: 'Smart Fire Extinguisher System',
-    description: 'An automated fire detection and suppression system designed for trains, using sensor data to trigger real-time safety responses.',
-    tech: ['IoT', 'Sensors', 'Arduino', 'Embedded'],
-  },
 ];
 
 export default function Projects() {

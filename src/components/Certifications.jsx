@@ -13,6 +13,16 @@ const certifications = [
     link: 'https://achieve.snowflake.com/2fe99bc3-302b-4ae7-ac6a-7e4551b6ac0a#acc.iRlEjbGp',
   },
   {
+    title: 'Salesforce Certified Agentforce Specialist',
+    description: 'Certified in Salesforce Agentforce tools, automation workflows, and CRM-based solutions for enterprise applications.',
+    link: 'https://trailhead.salesforce.com/fr/credentials/certification-detail-print/?searchString=IcRjODC03kMajLa122oUyNrF7MMZ2ji+X7KaT4lQqzaam7j+Ped6+4D+cGxNcbsN',
+  },
+  {
+    title: 'AWS AI Practitioner Challenge – Udacity',
+    description: 'Completed training on AWS AI fundamentals, cloud-based AI services, and real-world AI application concepts.',
+    link: 'https://www.udacity.com/certificate/e/7bcdda5e-325d-11f1-8f04-8b0570844553',
+  },
+  {
     title: 'PCB Design – Pebbles Electronics',
     description: 'Hands-on experience in PCB design tools and techniques',
   },
