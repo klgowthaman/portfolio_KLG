@@ -1,6 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { FiExternalLink } from 'react-icons/fi';
-import { FiCpu, FiFileText, FiGlobe, FiPlay, FiShield, FiCloud, FiMap } from 'react-icons/fi';
+import { FiExternalLink, FiGithub } from 'react-icons/fi';
+import { FiCpu, FiFileText, FiGlobe, FiPlay, FiCloud, FiMap } from 'react-icons/fi';
 
 const projects = [
   {
@@ -12,7 +13,7 @@ const projects = [
   },
   {
     icon: <FiGlobe />,
-    title: 'Traveling Agent Web Application',
+    title: 'Traveling Agent Web App',
     description: 'A dynamic travel planning platform built with React, helping users discover destinations, plan itineraries, and book trips with an intuitive UI.',
     tech: ['React.js', 'JavaScript', 'CSS', 'API'],
     github: 'https://github.com/klgowthaman/web-for-travel-',
@@ -33,7 +34,7 @@ const projects = [
   },
   {
     icon: <FiCpu />,
-    title: 'AI-Based Automatic Form Filling System',
+    title: 'AI Form Filling System',
     description: 'Extracts structured data from ID cards and documents using AI, then automatically fills digital forms — eliminating manual entry and boosting efficiency.',
     tech: ['Python', 'AI/ML', 'OCR', 'Automation'],
   },
@@ -47,6 +48,55 @@ const projects = [
 
 export default function Projects() {
   const { ref, inView } = useInView({ threshold: 0.05, triggerOnce: true });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeProject = projects[activeIndex];
+
+  const tickerItems = [
+    ...projects.map((p, i) => ({ ...p, originalIndex: i })),
+    ...projects.map((p, i) => ({ ...p, originalIndex: i }))
+  ];
+
+  const trackRef = useRef(null);
+  const isDragging = useRef(false);
+  const isHovered = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  useEffect(() => {
+    let animationId;
+    const track = trackRef.current;
+    
+    const scroll = () => {
+      if (!isDragging.current && !isHovered.current && track) {
+        track.scrollLeft += 0.8;
+        if (track.scrollLeft >= track.scrollWidth / 2) {
+          track.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(scroll);
+    };
+    
+    animationId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(animationId);
+  }, []);
+
+  const handleMouseDown = (e) => {
+    isDragging.current = true;
+    startX.current = e.pageX - trackRef.current.offsetLeft;
+    scrollLeft.current = trackRef.current.scrollLeft;
+  };
+  
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - trackRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    trackRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDragging.current = false;
+  };
 
   return (
     <section className="section" id="projects">
@@ -58,47 +108,94 @@ export default function Projects() {
             A selection of projects showcasing my skills in AI, web development, and embedded systems.
           </p>
         </div>
-        <div className="projects-grid">
-          {projects.map((project, i) => (
+
+        <div className={`projects-showcase fade-up${inView ? ' visible' : ''}`}>
+          {/* Main Dynamic Showcase Panel (Top Box) */}
+          <div className="project-detail-card">
+            {/* Visual Showcase Panel */}
+            <div className="project-detail-visual" key={`visual-${activeIndex}`}>
+              <div className="visual-grid-overlay"></div>
+              <div className="visual-glow"></div>
+              <div className="visual-x-mark"></div>
+              <span className="visual-icon">{activeProject.icon}</span>
+              <div className="visual-tech-summary">
+                {activeProject.tech.map((t) => (
+                  <span key={t} className="visual-badge">{t}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Description & Links Detail Panel */}
+            <div className="project-detail-content" key={`content-${activeIndex}`}>
+              <span className="project-number">Project 0{activeIndex + 1}</span>
+              <h3>{activeProject.title}</h3>
+              <p className="project-description-full">{activeProject.description}</p>
+              
+              <div className="project-detail-tech">
+                {activeProject.tech.map((t) => (
+                  <span key={t} className="tech-badge">{t}</span>
+                ))}
+              </div>
+
+              <div className="project-action-links">
+                {activeProject.github && (
+                  <a
+                    href={activeProject.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary project-action-btn"
+                  >
+                    <FiGithub size={16} /> View Code
+                  </a>
+                )}
+                {activeProject.live && (
+                  <a
+                    href={activeProject.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary project-action-btn"
+                  >
+                    <FiExternalLink size={16} /> Live Demo
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Infinite Scrolling Selector Row (Bottom Box) */}
+      <div className={`proj-ticker-wrapper fade-up${inView ? ' visible' : ''}`} style={{ marginTop: '40px' }}>
+        <div className="proj-ticker-fade proj-ticker-fade--left" />
+        <div className="proj-ticker-fade proj-ticker-fade--right" />
+
+        <div 
+          className="proj-ticker-track"
+          ref={trackRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={() => { isHovered.current = false; handleMouseUpOrLeave(); }}
+          onMouseUp={handleMouseUpOrLeave}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => { isHovered.current = true; }}
+          onTouchStart={() => { isHovered.current = true; }}
+          onTouchEnd={() => { isHovered.current = false; }}
+        >
+          {tickerItems.map((project, i) => (
             <div
-              className={`project-card fade-up${inView ? ' visible' : ''}`}
-              style={{ 
-                transitionDelay: `${i * 0.12}s`,
-                cursor: project.github ? 'pointer' : 'default'
-              }}
+              className={`proj-ticker-card ${activeIndex === project.originalIndex ? 'active' : ''}`}
               key={i}
-              onClick={() => project.github && window.open(project.github, '_blank', 'noopener,noreferrer')}
+              onClick={() => setActiveIndex(project.originalIndex)}
+              style={{ cursor: 'pointer' }}
             >
-              <div className="project-icon-wrapper">
-                <span className="project-icon">{project.icon}</span>
+              <div className="proj-ticker-top">
+                <span className="proj-ticker-icon">{project.icon}</span>
+                <span className="proj-ticker-number">0{project.originalIndex + 1}</span>
               </div>
-              <div className="project-body">
-                <span className="project-number">Project 0{i + 1}</span>
+              <div className="proj-ticker-body">
                 <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="project-tech">
-                  {project.tech.map((t) => <span key={t}>{t}</span>)}
-                </div>
-                <div className="project-links">
-                  {project.github && (
-                    <span className="project-link" style={{ zIndex: 2, position: 'relative' }}>
-                      View Code
-                    </span>
-                  )}
-                  {project.live && (
-                    <a 
-                      href={project.live} 
-                      className="project-link" 
-                      target="_blank" 
-                      rel="noreferrer"
-                      style={{ zIndex: 2, position: 'relative' }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FiExternalLink /> Live Demo
-                    </a>
-                  )}
-                </div>
+                <p>{project.description.slice(0, 65)}...</p>
               </div>
+              <div className="proj-ticker-indicator"></div>
             </div>
           ))}
         </div>
