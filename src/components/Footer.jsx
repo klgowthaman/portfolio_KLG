@@ -12,7 +12,7 @@ export default function Footer() {
           <a href="https://linkedin.com/in/gowthaman-kl" target="_blank" rel="noreferrer" aria-label="LinkedIn">
             <FiLinkedin />
           </a>
-          <a href="mailto:gowthamanklece@gmail.com" aria-label="Email">
+          <a href="mailto:klgowthaman86@gmail.com" aria-label="Email">
             <FiMail />
           </a>
         </div>
